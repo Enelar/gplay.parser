@@ -9,7 +9,7 @@ phoxy =
   skip_initiation: true,
   OnWaiting: function()
   {
-    phoxy._EarlyStage.async_require[2] = "/phoxy/libs/EJS/ejs.js";
+    phoxy._EarlyStage.async_require[0] = "/phoxy/libs/EJS/ejs.js";
     phoxy._EarlyStage.EntryPoint();
   },
   OnBeforeCompile: function()
