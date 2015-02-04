@@ -1,0 +1,4 @@
+RewriteEngine On
+
+RewriteRule ^api/$ api/main/home [QSA]
+RewriteRule ^api/(.*)$ rpc.php?api=$1 [L,E=FINISH:1,QSA]
