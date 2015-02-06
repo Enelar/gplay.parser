@@ -31,7 +31,7 @@ class parser extends api
     return $res;
   }
 
-  protected function ParseGame($name)
+  private function ParseGame($name)
   {
     $obj = $this->RawScan('http://play.google.com/store/apps/details?hl=ru&id='.$name);
     var_dump($obj);
@@ -42,9 +42,15 @@ class parser extends api
   {
     $res = $this->ParseGame($name);
     $trans = db::Begin();
+
+    $ihate = '';
+    for ($k = 0; $k < strlen($res['installs']); $k++)
+      if (in_array($res['installs'][$k], ['1','2','3','4','5','7','8','9','0','-']))
+        $ihate .= $res['installs'][$k];
+    $res['installs'] = $ihate;
     var_dump(      [ 
         $name,
-        (int)str_replace(' ', '', $res['installs']),
+        (int)$res['installs'],
         $res['rating'],
         $res['rated'],
         $this->CrapCodedDateConvert($res['updated']),
@@ -60,7 +66,7 @@ class parser extends api
       [
         $name,
         $res['name'],
-        (int)$res['installs'],
+        (int)str_replace(' ', '', $res['installs']),
         $res['rating'],
         $res['rated'],
         $this->CrapCodedDateConvert($res['updated']),
@@ -79,7 +85,7 @@ class parser extends api
     }
   }
 
-  protected function CrapCodedDateConvert($date)
+  private function CrapCodedDateConvert($date)
   {
     $rus =
     [

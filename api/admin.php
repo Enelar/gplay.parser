@@ -71,6 +71,6 @@ class admin extends api
 
   protected function Saw($url)
   {
-    db::Query("UPDATE database SET saw=true WHERE url=$1", [$url]);
+    db::Query("UPDATE database SET ignore=true WHERE url=$1", [$url]);
   }
 }
