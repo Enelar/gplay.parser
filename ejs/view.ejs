@@ -1,0 +1,55 @@
+<div>
+  <table class="ui table">
+    <tr>
+      <th>Название</th>
+      <th>Установок</th>
+      <th>Рейтинг</th>
+      <th>Комментариев</th>
+      <th>Обновлен</th>
+      <th>Категория</th>
+      <th></th>
+    </tr> 
+<%
+for (var k in this.list)
+{
+  var v = this.list[k];
+%>
+  <tr url='<%@ v.url %>'>
+    <td>
+      <a href='http://play.google.com/store/apps/details?hl=ru&id=<%@ v.url %>'>
+        <i class="external link icon"></i>
+      </a>
+      <%@ v.name ? v.name : v.url %>
+    </td>
+    <td><%@ v.installs %></td>
+    <td>
+      <div class="ui rating" data-rating="<%@ parseInt(v.rating) %>" data-max-rating="5"></div>
+    </td>
+    <td><%@ v.comments %></td>
+    <td><%@ v.updated %></td>
+    <td><%@ v.category %></td>
+    <td>
+      <i class='icon link outline flag'></i>
+    </td>
+  </tr>
+<%
+}
+%>
+  </table>
+</div>
+
+<%
+this.first(function()
+{
+  this.find('.rating').rating();
+  this.find('.icon.link.outline.flag').click(function()
+  {
+    var tr = $(this).parents('tr');
+    var url = tr.attr('url');
+    phoxy.ApiRequest('admin/Saw', [url], function()
+    {
+      tr.remove();
+    })
+  })
+})
+%>

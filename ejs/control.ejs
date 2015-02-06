@@ -1,0 +1,30 @@
+<div>
+  <input placeholder='Минимум установок' name='install'>
+  <input placeholder='Минимум звезд' name='rating'>
+  <input placeholder='Минимум отзывов' name='comments'>
+  <input placeholder='Не ранее чем' name='date'>
+  <div class='ui button'></div>
+</div>
+
+<%
+this.first(function()
+{
+  var wow = this;
+  this.find('.button').click(function()
+  {
+    var arr =
+    [
+      wow.find('[name="install"]').val(),
+      wow.find('[name="rating"]').val(),
+      wow.find('[name="comments"]').val(),
+      wow.find('[name="date"]').val(),
+    ];
+
+    for (var i = 0; i < arr.length; i++)
+      if (arr[i] == '')
+        arr[i] = 0;
+
+    phoxy.Reset('/admin/Filter(' + phoxy.Serialize(arr) + ')');
+  })
+})
+%>

@@ -1,0 +1,41 @@
+<div>
+  <div class='ui fluid input action'>
+    <input placeholder='Название игры com.example.game'/>
+    <div class="ui teal right labeled icon button">
+      <i class="ban icon"></i>
+      Добавить
+    </div>
+  </div>
+
+  <table class="ui table">
+
+<%
+for (var k in this.list)
+{
+  var v = this.list[k];
+%>
+  <tr>
+    <td>
+      <a href='http://play.google.com/store/apps/details?hl=ru&id=<%@ v.url %>'>
+        <i class="external link icon"></i>
+      </a>
+      <%@ v.name ? v.name : v.url %>
+    </td>
+    <td>
+      <i class='icon link close'></i>
+    </td>
+  </tr>
+<%
+}
+%>
+  </table>
+</div>
+<%
+this.first(function()
+{
+  this.find('.button').click(function()
+  {
+    debugger;
+  })
+})
+%>

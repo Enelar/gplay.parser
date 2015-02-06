@@ -1,0 +1,27 @@
+<div class="ui sidebar">
+  <ul>
+    <li><a href='/admin/IgnoreList'>Игнор</a></li>
+    <li><a href='/admin/Fresh'>Новые</a></li>
+    <li><a href='/admin/Filter'>Фильтр</a></li>
+    <li><a href='/admin/Export'>Экспорт</a></li>
+  </ul>
+</div>
+<div class='fixed menubtn'>
+  Menu
+  <i class='icon content' />
+</div>
+
+<div class="pusher">
+
+<div id='canvas'></div>
+</div>
+
+<%
+this.first(function()
+{
+  this.siblings(".menubtn").click(function()
+  {
+    __context.first().sidebar('toggle');
+  })
+})
+%>

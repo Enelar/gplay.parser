@@ -2,3 +2,7 @@ RewriteEngine On
 
 RewriteRule ^api/$ api/main/home [QSA]
 RewriteRule ^api/(.*)$ rpc.php?api=$1 [L,E=FINISH:1,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.html [L,E=FINISH:1,QSA]

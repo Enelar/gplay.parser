@@ -44,7 +44,7 @@ class parser extends api
     $trans = db::Begin();
     var_dump(      [ 
         $name,
-        (int)$res['installs'],
+        (int)str_replace(' ', '', $res['installs']),
         $res['rating'],
         $res['rated'],
         $this->CrapCodedDateConvert($res['updated']),
