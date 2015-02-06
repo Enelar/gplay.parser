@@ -43,19 +43,21 @@ class parser extends api
     $res = $this->ParseGame($name);
     $trans = db::Begin();
 
-    $ihate = '';
+    $ihate = iconv("UTF-8", 'ASCII//TRANSLIT', $res['installs']);
+    $ihate = str_replace(' ', '', $ihate);
+    /*
     for ($k = 0; $k < strlen($res['installs']); $k++)
-      if (in_array($res['installs'][$k], ['1','2','3','4','5','7','8','9','0','-']))
+    {
+      var_dump();
+      //var_dump([$k]);
+      if ($res['installs'][$k] == '–')
+        break;
+      else if (in_array($res['installs'][$k], ['1','2','3','4','5','7','8','9','0']))
         $ihate .= $res['installs'][$k];
+    }
+    */
     $res['installs'] = $ihate;
-    var_dump(      [ 
-        $name,
-        (int)$res['installs'],
-        $res['rating'],
-        $res['rated'],
-        $this->CrapCodedDateConvert($res['updated']),
-        $res['category'],
-      ]);
+    var_dump($res['installs']);
 
     db::Query("DELETE FROM tasks WHERE addr=$1", [$name]);
     db::Query("DELETE FROM database WHERE url=$1", [$name]);
@@ -66,7 +68,7 @@ class parser extends api
       [
         $name,
         $res['name'],
-        (int)str_replace(' ', '', $res['installs']),
+        (float)$res['installs'],
         $res['rating'],
         $res['rated'],
         $this->CrapCodedDateConvert($res['updated']),

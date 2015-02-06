@@ -31,7 +31,7 @@ class admin extends api
     db::Query("INSERT INTO database(url, ignore) VALUES ($1, true)", [$url]);
   }
 
-  protected function Fresh($days = 1)
+  protected function Fresh($days = 10)
   {
     $list = db::Query("SELECT * FROM database WHERE now()-updated<$1::interval ORDER BY since DESC", ["$days days"]);
     return
@@ -64,9 +64,20 @@ class admin extends api
     ];
   }
 
-  protected function Export()
+  protected function Export($install = null, $rating = null, $comments = null, $date = null)
   {
+    header("Content-type: text/csv");
+    header("Content-Disposition: attachment; filename=file.csv");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    $list = $this()->Filter($install, $rating, $comments, $date);
+    $f = fopen('php://output', 'w');
 
+    foreach ($list->original_row_array as $row)
+      fputcsv($f, $row);
+    fflush($f);
+    fclose($f);
+    die();
   }
 
   protected function Saw($url)
