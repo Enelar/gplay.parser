@@ -33,7 +33,7 @@ class admin extends api
 
   protected function Fresh($days = 10)
   {
-    $list = db::Query("SELECT * FROM database WHERE now()-updated<$1::interval ORDER BY since DESC", ["$days days"]);
+    $list = db::Query("SELECT * FROM database WHERE ignore=false AND now()-updated<$1::interval ORDER BY installs DESC", ["$days days"]);
     return
     [
       "design" => "fresh",

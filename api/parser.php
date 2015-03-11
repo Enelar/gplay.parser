@@ -81,10 +81,16 @@ class parser extends api
     {
       $url = str_replace("/store/apps/details?id=", "", $url);
       $trans = db::Begin();
-      db::Query("INSERT INTO database(url, name) VALUES ($1, '')", [$url]);
-      db::Query("INSERT INTO tasks(addr) VALUES ($1)", [$url]);
+      @db::Query("INSERT INTO database(url, name) VALUES ($1, '')", [$url]);
+      @db::Query("INSERT INTO tasks(addr) VALUES ($1)", [$url]);
       $trans->Commit();
     }
+?>
+<script type='text/javascript'>
+setTimeout(function() { location.reload(); }, 5000);
+</script>
+<?php
+    return ["reset" => true];
   }
 
   private function CrapCodedDateConvert($date)
