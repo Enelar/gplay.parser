@@ -79,17 +79,16 @@ var exportf = function()
     { // Inside browser
 
       parsed = {};
-      parsed['name'] = $('.document-title[itemprop="name"]').text();
-      parsed['rating'] = $('.rating-box [itemprop="ratingValue"]').attr('content');
-      parsed['rated'] = $('.rating-box [itemprop="ratingCount"]').attr('content');
-      parsed['installs'] = $('[itemprop="numDownloads"]').text();
-      parsed['updated'] = $('[itemprop="datePublished"]').text();
-      parsed['category'] = $('[itemprop="genre"]').text();
+      parsed.title = $('h1').text();
+      parsed.game_url = $('#swf1').attr('src');
+      parsed.description = $('#boxcentr p').text();
+
       parsed['urls'] = [];
-      $('.cards a.title').each(function()
+      $('a').each(function()
       {
         parsed['urls'].push($(this).attr('href'));
       })
+
 
       return {'parsed': parsed};
     }, // Outside browser

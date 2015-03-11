@@ -33,7 +33,7 @@ class parser extends api
 
   private function ParseGame($name)
   {
-    $obj = $this->RawScan('http://play.google.com/store/apps/details?hl=ru&id='.$name);
+    $obj = $this->RawScan('http://playpack.ru/flash/'.$name);
     var_dump($obj);
     return $obj['parsed'];
   }
@@ -43,43 +43,27 @@ class parser extends api
     $res = $this->ParseGame($name);
     $trans = db::Begin();
 
-    $ihate = iconv("UTF-8", 'ASCII//TRANSLIT', $res['installs']);
-    $ihate = str_replace(' ', '', $ihate);
-    /*
-    for ($k = 0; $k < strlen($res['installs']); $k++)
-    {
-      var_dump();
-      //var_dump([$k]);
-      if ($res['installs'][$k] == '–')
-        break;
-      else if (in_array($res['installs'][$k], ['1','2','3','4','5','7','8','9','0']))
-        $ihate .= $res['installs'][$k];
-    }
-    */
-    $res['installs'] = $ihate;
-    var_dump($res['installs']);
-
     db::Query("DELETE FROM tasks WHERE addr=$1", [$name]);
     db::Query("DELETE FROM database WHERE url=$1", [$name]);
     db::Query("INSERT INTO database
-      (url, name, installs, rating, comments, updated, category)
+      (url, name, game_url, description, saw)
       VALUES
-      ($1, $2, $3, $4, $5, $6, $7)",
+      ($1, $2, $3, $4, true)",
       [
         $name,
-        $res['name'],
-        (float)$res['installs'],
-        $res['rating'],
-        $res['rated'],
-        $this->CrapCodedDateConvert($res['updated']),
-        $res['category'],
+        $res['title'],
+        $res['game_url'],
+        $res['description'],
       ]);
 
     $trans->Commit();
 
     foreach ($res['urls'] as $url)
     {
-      $url = str_replace("/store/apps/details?id=", "", $url);
+      $old = $url;
+      $url = str_replace("/flash/", "", $old);
+      if ($old == $url)
+        return; // not interesting
       $trans = db::Begin();
       @db::Query("INSERT INTO database(url, name) VALUES ($1, '')", [$url]);
       @db::Query("INSERT INTO tasks(addr) VALUES ($1)", [$url]);
@@ -93,41 +77,4 @@ setTimeout(function() { location.reload(); }, 5000);
     return ["reset" => true];
   }
 
-  private function CrapCodedDateConvert($date)
-  {
-    $rus =
-    [
-      'января',
-      'февраля',
-      'марта',
-      'апреля',
-      'мая',
-      'июня',
-      'июля',
-      'августа',
-      'сентября',
-      'октября',
-      'ноября',
-      'декабря',
-    ];
-
-    $eng =
-    [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-
-    $date = str_replace("г.", "", $date);
-    return str_replace($rus, $eng, $date);
-  }
 }
