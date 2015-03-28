@@ -1,13 +1,19 @@
 <?php
-
+wait
 class parser extends api
 {
+  protected function Stats()
+  {
+    $res = db::Query("SELECT * FROM stats");
+    var_dump($res);
+  }
+
   protected function NextOne()
   {
     $res = db::Query("
       WITH one AS
       (
-        SELECT addr as name FROM tasks WHERE \"lock\" IS NULL OR now()-\"lock\">'5 min'::interval LIMIT 1
+        SELECT addr as name FROM tasks WHERE (\"lock\" IS NULL OR now()-\"lock\">'5 min'::interval) AND (snap < '2015-03-13 08:18:03.218682+00'::timestamptz) LIMIT 1
       ) UPDATE tasks SET \"lock\"=now() FROM one WHERE addr=name RETURNING name", [], true);
     if (!$res())
       return;
@@ -44,16 +50,18 @@ class parser extends api
     $trans = db::Begin();
 
     db::Query("DELETE FROM tasks WHERE addr=$1", [$name]);
+    $since = db::Query("SELECT since FROM database WHERE url=$1", [$name], true);
     db::Query("DELETE FROM database WHERE url=$1", [$name]);
     db::Query("INSERT INTO database
-      (url, name, game_url, description, saw)
+      (url, name, game_url, description, saw, since)
       VALUES
-      ($1, $2, $3, $4, true)",
+      ($1, $2, $3, $4, true, $5)",
       [
         $name,
         $res['title'],
         $res['game_url'],
         $res['description'],
+        $since['since'],
       ]);
 
     $trans->Commit();
